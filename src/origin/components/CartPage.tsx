@@ -2,21 +2,25 @@ import { useState } from 'react';
 import { CartItem, Coupon, Product } from '../../types.ts';
 
 interface Props {
-  products: Product[];
+  products: Product[];      
   coupons: Coupon[];
 }
 
 export const CartPage = ({ products, coupons }: Props) => {
+  
   const [cart, setCart] = useState<CartItem[]>([]);
   const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
 
 
+  //카드 상품 추가
   const addToCart = (product: Product) => {
+    //재고가 없으면 early return
     const remainingStock = getRemainingStock(product);
     if (remainingStock <= 0) return;
 
     setCart(prevCart => {
       const existingItem = prevCart.find(item => item.product.id === product.id);
+      //이미 장바구니에 있는 상품이면 수량만 증가
       if (existingItem) {
         return prevCart.map(item =>
           item.product.id === product.id
@@ -28,10 +32,12 @@ export const CartPage = ({ products, coupons }: Props) => {
     });
   };
 
+  //장바구니에서 상품 삭제
   const removeFromCart = (productId: string) => {
     setCart(prevCart => prevCart.filter(item => item.product.id !== productId));
   };
 
+  //상품 수량 변경
   const updateQuantity = (productId: string, newQuantity: number) => {
     setCart(prevCart =>
       prevCart.map(item => {
@@ -52,6 +58,7 @@ export const CartPage = ({ products, coupons }: Props) => {
     cart.forEach(item => {
       const { price } = item.product;
       const { quantity } = item;
+
       totalBeforeDiscount += price * quantity;
 
       const discount = item.product.discounts.reduce((maxDiscount, d) => {
@@ -80,11 +87,12 @@ export const CartPage = ({ products, coupons }: Props) => {
     };
   };
 
-
+//최대 할인율 구하기
   const getMaxDiscount = (discounts: { quantity: number; rate: number }[]) => {
     return discounts.reduce((max, discount) => Math.max(max, discount.rate), 0);
   };
 
+//남은 재고 구하기
   const getRemainingStock = (product: Product) => {
     const cartItem = cart.find(item => item.product.id === product.id);
     return product.stock - (cartItem?.quantity || 0);
@@ -92,6 +100,7 @@ export const CartPage = ({ products, coupons }: Props) => {
 
   const { totalBeforeDiscount, totalAfterDiscount, totalDiscount } = calculateTotal()
 
+//적용된 할인율 구하기
   const getAppliedDiscount = (item: CartItem) => {
     const { discounts } = item.product;
     const { quantity } = item;
