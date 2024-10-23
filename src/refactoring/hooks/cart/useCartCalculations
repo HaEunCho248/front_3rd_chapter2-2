@@ -1,0 +1,8 @@
+import { CartItem,Coupon } from '../../../types';
+
+
+export const useCartCalculations = (
+    cart:CartItem[],
+    selectedCoupon : Coupon|null,
+) => {return ;}
+    
