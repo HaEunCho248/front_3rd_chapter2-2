@@ -1,6 +1,9 @@
 import { CartItem, Coupon, Product } from '../../types.ts';
 import { useCart } from "../hooks";
 
+import Header from "./common/Header.tsx";
+import Paper from "./common/Paper.tsx";
+
 interface Props {
   products: Product[];
   coupons: Coupon[];
@@ -45,12 +48,13 @@ export const CartPage = ({ products, coupons }: Props) => {
       <h1 className="text-3xl font-bold mb-6">장바구니</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <h2 className="text-2xl font-semibold mb-4">상품 목록</h2>
+          <Header>상품 목록</Header>
           <div className="space-y-2">
             {products.map(product => {
               const remainingStock = getRemainingStock(product);
               return (
-                <div key={product.id} data-testid={`product-${product.id}`} className="bg-white p-3 rounded shadow">
+                <div key={product.id} data-testid={`product-${product.id}`}>
+    
                   <div className="flex justify-between items-center mb-2">
                     <span className="font-semibold">{product.name}</span>
                     <span className="text-gray-600">{product.price.toLocaleString()}원</span>
@@ -65,6 +69,7 @@ export const CartPage = ({ products, coupons }: Props) => {
                       </span>
                     )}
                   </div>
+
                   {product.discounts.length > 0 && (
                     <ul className="list-disc list-inside text-sm text-gray-500 mb-2">
                       {product.discounts.map((discount, index) => (
@@ -74,6 +79,7 @@ export const CartPage = ({ products, coupons }: Props) => {
                       ))}
                     </ul>
                   )}
+
                   <button
                     onClick={() => addToCart(product)}
                     className={`w-full px-3 py-1 rounded ${
@@ -91,12 +97,14 @@ export const CartPage = ({ products, coupons }: Props) => {
           </div>
         </div>
         <div>
-          <h2 className="text-2xl font-semibold mb-4">장바구니 내역</h2>
+          <Header>장바구니 내역</Header>
 
           <div className="space-y-2">
             {cart.map(item => {
               const appliedDiscount = getAppliedDiscount(item);
               return (
+
+                //card 모양으로 빼기 
                 <div key={item.product.id} className="flex justify-between items-center bg-white p-3 rounded shadow">
                   <div>
                     <span className="font-semibold">{item.product.name}</span>

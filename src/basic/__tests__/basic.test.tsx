@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 import { act, fireEvent, render, renderHook, screen, within } from '@testing-library/react';
 import { CartPage } from '../../refactoring/components/CartPage';
 import { AdminPage } from "../../refactoring/components/AdminPage";
@@ -386,6 +386,12 @@ describe('basic > ', () => {
     const testProduct: Product = { id: '1', name: 'Test Product', price: 100, stock: 10, discounts: [] };
     const testCoupon: Coupon = { name: 'Test Coupon', code: 'TEST', discountType: 'percentage', discountValue: 10 };
 
+
+  // 각 테스트 전에 localStorage 초기화
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
+  
     test('장바구니에 제품을 추가해야 합니다', () => {
       const { result } = renderHook(() => useCart());
 
